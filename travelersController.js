@@ -109,7 +109,7 @@ exports.updateIdCounter = function(id, email){
 }
 
 exports.getIdCounter = function(email){
-  var query = Traveler.findOne().where('email', mail).select('id_counter');
+  var query = Traveler.findOne().where('email', email).select('id_counter');
   query.exec(function(err,idCounter){
     if(err) callback("idCounterNotFound");
     callback(idCounter);
