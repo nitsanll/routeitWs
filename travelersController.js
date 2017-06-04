@@ -102,19 +102,19 @@ exports.addRouteToTraveler = function(id, mail, callback){
 
 // calculate trip end date and daily sections dates and update the trip dates 
 exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, callback){	
-  sDate.setHours(10);
+  //sDate.setHours(10);
   //console.log("first " + sDate);
   //calculate trip's end date
   //console.log(sDate.getDate());
   //var eDate =  new Date(sDate.getTime() + Math.abs(sDate.getTimezoneOffset()*60000);
   var eDate =  new Date(sDate);
   //eDate.toUTCString();
-  eDate.setDate(eDate.getDate()+parseInt(daysNum-1));
-  callback({"sDate": sDate, "eDate": eDate});
+  eDate.setDate(eDate.getDate()+parseInt(daysNum));
+  //callback({"sDate": sDate, "eDate": eDate});
   //console.log("start date: " +sDate);
   //console.log("end date: "+eDate +"\n");
 
-  /*var tmpDate = sDate;
+  var tmpDate = sDate;
   var tripDatesArr = []; //array contains all of the trip's dates
   //calculating trip dates between start date to end date
   for(var i = 0;  i<daysNum; i++){
@@ -156,7 +156,7 @@ exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, c
         callback(updatedRoute);
       }
       else callback("routeNotFound");	
-    });*/
+    });
 }
 
 //delete trip dates and daily sections dates
