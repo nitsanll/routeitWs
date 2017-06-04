@@ -101,8 +101,8 @@ exports.addRouteToTraveler = function(id, mail, callback){
 }
 
 // calculate trip end date and daily sections dates and update the trip dates 
-exports.updateTripDates = function(mail, tripId, sDate1, daysNum, isFri, isSat, callback){	
-  var sDate = new Date(sDate1);
+exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, callback){	
+  //var sDate = new Date(sDate1);
   //console.log("first " + sDate);
   //calculate trip's end date
   //console.log(sDate.getDate());
