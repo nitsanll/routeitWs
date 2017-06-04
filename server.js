@@ -67,7 +67,7 @@ app.get('/createTraveler/:ml/:fn/:pi', function(req,res){
 app.get('/addRoute/:id/:ml', function(req,res){
     Traveler.addRouteToTraveler(req.params.id, req.params.ml, function(routeData){
       var route = routeData;
-      Traveler.updateIdCounter(req.params.ml, function(data){
+      Traveler.updateIdCounter(req.params.id, req.params.ml, function(data){
         res.json(route); 
       });
     });
