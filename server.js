@@ -74,9 +74,10 @@ app.get('/updateDates/:ml/:id/:sd/:dn/:fr/:st', function(req,res){
     console.log("before sending: " + req.params.sd);
     var date =  new Date(req.params.sd);
     //date.setHours(10);
-    Traveler.updateTripDates(req.params.ml, req.params.id, date, req.params.dn, req.params.fr, req.params.st, function(data){
+    /*Traveler.updateTripDates(req.params.ml, req.params.id, date, req.params.dn, req.params.fr, req.params.st, function(data){
       res.json(data); 
-    });
+    });*/
+    res.json({'param': req.params.sd, 'date': date});
 });
 
 app.get('/deleteDates/:ml/:id', function(req,res){
