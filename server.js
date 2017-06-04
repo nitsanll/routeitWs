@@ -73,7 +73,7 @@ app.get('/addRoute/:id/:ml', function(req,res){
 app.get('/updateDates/:ml/:id/:sd/:dn/:fr/:st', function(req,res){
     console.log("before sending: " + req.params.sd);
     var date =  new Date(req.params.sd);
-    date.setHours(14);
+    date.setHours(10);
     Traveler.updateTripDates(req.params.ml, req.params.id, date, req.params.dn, req.params.fr, req.params.st, function(data){
       res.json(data); 
     });
