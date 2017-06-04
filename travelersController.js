@@ -16,9 +16,9 @@ exports.createTraveler = function(mail, name, pic, callback){
                 full_name: name,
                 image: pic,
                 email: mail,
-                current_route_id: "",
                 previous_routes: [],
-                my_routes: []
+                my_routes: [],
+                id_counter: 0
         }); 
         newUser.save();
         callback("newUser"); 
