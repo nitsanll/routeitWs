@@ -106,9 +106,9 @@ exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, c
   //console.log("first " + sDate);
   //calculate trip's end date
   //console.log(sDate.getDate());
-  var eDate = new Date(sDate);
+  var eDate =  new Date(sDate.getTime() + Math.abs(sDate.getTimezoneOffset()*60000)e);
   //eDate.toUTCString();
-  eDate.setDate(eDate.getUTCDate()+parseInt(daysNum));
+  eDate.setDate(eDate.getUTCDate()+parseInt(daysNum-1));
   callback({"sDate": sDate, "eDate": eDate});
   //console.log("start date: " +sDate);
   //console.log("end date: "+eDate +"\n");
