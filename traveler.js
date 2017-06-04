@@ -53,7 +53,8 @@ var route = new schema({
     trip_difficulty: String,
     trip_type: [String],
     trip_description: [String],
-    daily_sections: [daily_section]
+    daily_sections: [daily_section],
+    disabled_flag: Boolean
 });
 
 var prevRoute = new schema({

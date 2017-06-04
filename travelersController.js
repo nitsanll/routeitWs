@@ -88,7 +88,8 @@ exports.addRouteToTraveler = function(id, mail, callback){
           trip_difficulty: route.trip_difficulty,
           trip_type: route.trip_type,
           trip_description: route.trip_description,
-          daily_sections: dailySectionsArr
+          daily_sections: dailySectionsArr,
+          disabled_flag: route.disabled_flag
         };
 
       var query = Traveler.findOneAndUpdate({email: mail}, {$push: {my_routes: myRoute}});
@@ -401,7 +402,8 @@ exports.addRouteToSuggested = function(route, mail, callback){
       trip_difficulty: route.trip_difficulty,
       trip_type: route.trip_type,
       trip_description: route.trip_description,
-      daily_sections: dailySectionsArr
+      daily_sections: dailySectionsArr,
+      disabled_flag: route.disabled_flag
     };
 
     console.log("suggested is: " + sugRoute);

@@ -5,9 +5,9 @@ exports.setAlertForSegment = function(callback){
     var alert = {
         content: "פריחת הנרקיסים מרהיבה ביופיה בעונה זו",
         coord: {
-    lat: 33.177462,
-    lng: 35.555971
-  }
+            lat: 33.177462,
+            lng: 35.555971
+        }
     }
     var query = Segment.findOneAndUpdate({indx: 6}, {$push: {alert: alert}});
     query.exec(function(err,route){
@@ -106,9 +106,11 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                 var totalDescription = [], tmpTotalDescription = []; // trip's total desccription
                 var endPt; // trip's end point
                 var easyDiff= 0, medDiff = 0, hardDiff = 0; // trip's difficulty division 
-                
+                var isDisabledFlag = false;
+                var isDisabledCounter = 0;
+
                 // if the trip's km per day is up to 5 km
-                if(kmDay == 5){
+                if(kmDay == 5){  
                     for(var i = 0; i<totalDays; i++){
                         dailySection = 
                         { 
@@ -125,6 +127,12 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                             "description": segments[i].description,
                             "type": segments[i].type
                         }
+                        for(var j=0; j<segments[i].type.length; j++){
+                            if(segments[i].type[j] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
                         dailySectionsArr.push(dailySection);
                         totalType = tmpTotalType.concat(segments[i].type);
                         tmpTotalType = totalType;
@@ -135,10 +143,14 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                         else if(segments[i].difficulty == "בינוני") medDiff+=1;
                         else hardDiff+=1;
                     }
+                    if(isDisabledCounter == totalDays){
+                        isDisabledFlag = true;
+                    }
+                    console.log(isDisabledFlag);
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
                     endPt = segments[(segments.length)-1].end_pt;
-                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, callback);
+                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
                     /*console.log("total KM: " + totalKm);
                     console.log("totalDescription: " + totalDescription);
                     console.log("easyDiff: " + easyDiff + " medDiff: " +medDiff+ " hardDiff: "+ hardDiff);
@@ -178,7 +190,18 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
 
                         // create new daily section type
                         var newTypeArr = (segments[j].type).concat(segments[j+1].type).unique();
-
+                        for(var k=0; k<segments[j].type.length; k++){
+                            if(segments[j].type[k] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
+                        for(var k=0; k<segments[j+1].type.length; k++){
+                            if(segments[j+1].type[k] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
                         // create new daily section total km
                         var newTotalKm = (segments[j].total_km + segments[j+1].total_km);
                         
@@ -207,11 +230,15 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                         else if(newDiff == "בינוני") medDiff+=1;
                         else hardDiff+=1;
                     }
+                    if(isDisabledCounter == (totalDays*2)){
+                        isDisabledFlag = true;
+                    }
+                    console.log(isDisabledFlag);
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
                     totalKm.toFixed(1);
                     endPt = segments[(segments.length)-1].end_pt;
-                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, callback);
+                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
                 }
                 
                 // if the trip's km per day is 10-15 km
@@ -251,7 +278,24 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                         // create new daily section type
                         var tmpTypeArr = (segments[j].type).concat(segments[j+1].type).unique();
                         var newTypeArr = tmpTypeArr.concat(segments[j+2].type).unique();
-
+                        for(var k=0; k<segments[j].type.length; k++){
+                            if(segments[j].type[k] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
+                        for(var k=0; k<segments[j+1].type.length; k++){
+                            if(segments[j+1].type[k] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
+                        for(var k=0; k<segments[j+2].type.length; k++){
+                            if(segments[j+2].type[k] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
                         // create new daily section total km
                         var newTotalKm = (segments[j].total_km + segments[j+1].total_km + segments[j+2].total_km);
 
@@ -280,11 +324,15 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                         else if(newDiff == "בינוני") medDiff+=1;
                         else hardDiff+=1;
                     }
+                    if(isDisabledCounter == (totalDays*3)){
+                        isDisabledFlag = true;
+                    }
+                    console.log(isDisabledFlag);
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
                     totalKm.toFixed(1);
                     endPt = segments[(segments.length)-1].end_pt;
-                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, callback);              
+                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);              
                 }       
             });
         }  
@@ -326,6 +374,8 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                 var totalDescription = [], tmpTotalDescription = []; // trip's total desccription
                 var endPt; // trip's end point
                 var easyDiff= 0, medDiff = 0, hardDiff = 0; // trip's difficulty division 
+                var isDisabledFlag = false;
+                var isDisabledCounter = 0;
 
                 // if the trip's km per day is up to 5 km
                 if(kmDay == 5){
@@ -345,6 +395,12 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                             "description": segments[j].description,
                             "type": segments[j].type
                         }
+                        for(var k=0; k<segments[j].type.length; k++){
+                            if(segments[j].type[k] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
                         dailySectionsArr.push(dailySection);
                         totalType = tmpTotalType.concat(segments[j].type);
                         tmpTotalType = totalType;
@@ -355,11 +411,15 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                         else if(segments[j].difficulty == "בינוני") medDiff+=1;
                         else hardDiff+=1;
                     }
+                    if(isDisabledCounter == totalDays){
+                        isDisabledFlag = true;
+                    }
+                    console.log(isDisabledFlag);
                     endPt = segments[0].start_pt;
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
                     totalKm.toFixed(1);
-                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, callback);
+                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
                 }
                 
                 // if the trip's km per day is 5-10 km
@@ -394,7 +454,18 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
 
                         // create new daily section type
                         var newTypeArr = (segments[j].type).concat(segments[j-1].type).unique();
-
+                        for(var k=0; k<segments[j].type.length; k++){
+                            if(segments[j].type[k] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
+                        for(var k=0; k<segments[j-1].type.length; k++){
+                            if(segments[j-1].type[k] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
                         // create new daily section total km
                         var newTotalKm = (segments[j].total_km + segments[j-1].total_km);
 
@@ -423,11 +494,15 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                         else if(newDiff == "בינוני") medDiff+=1;
                         else hardDiff+=1;
                     }
+                    if(isDisabledCounter == (totalDays*2)){
+                        isDisabledFlag = true;
+                    }
+                    console.log(isDisabledFlag);
                     endPt = segments[0].start_pt;
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
                     totalKm.toFixed(1);
-                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, callback);
+                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
                }
                 
                 // if the trip's km per day is 10-15 km
@@ -467,7 +542,24 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                         // create new daily section type
                         var tmpTypeArr = (segments[j].type).concat(segments[j-1].type).unique();
                         var newTypeArr = tmpTypeArr.concat(segments[j-2].type).unique();
-
+                        for(var k=0; k<segments[j].type.length; k++){
+                            if(segments[j].type[k] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
+                        for(var k=0; k<segments[j-1].type.length; k++){
+                            if(segments[j-1].type[k] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
+                        for(var k=0; k<segments[j-2].type.length; k++){
+                            if(segments[j-2].type[k] == "מתאים לבעלי מוגבלויות"){
+                                isDisabledCounter++;
+                                break;
+                            }
+                        }
                         // create new daily section total km
                         var newTotalKm = (segments[j].total_km + segments[j-1].total_km + segments[j-2].total_km);
 
@@ -496,18 +588,21 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                         else if(newDiff == "בינוני") medDiff+=1;
                         else hardDiff+=1;
                     }
+                    if(isDisabledCounter == (totalDays*3)){
+                        isDisabledFlag = true;
+                    }
                     endPt = segments[0].start_pt;
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
                     totalKm.toFixed(1);
-                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, callback);
+                    buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
                 }        
             });
         }        
     }
 
     // function that builds the suggested route
-    function buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, callback){
+    function buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback){
         var isTypeRight = false; //flag to check if the chosen type matches the trip type
         var isDiffRight = true; //flag to check if the chosen difficulty matches the trip difficulty
         var totalDiff = ""; //trip's total difficulty
@@ -618,9 +713,10 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
             if(isTypeRightFamily==true && isTypeRightChallenge==false && isTypeRightHard==false)
                 isTypeRight = true;
         }
-        // if the chosen type is for old people
+        // if the chosen type is for disabled people
         else if(type == "מתאים לבעלי מוגבלויות"){
-            for(t in totalType){
+           if(isDisabledFlag == true) isTypeRight = true;
+           /*for(t in totalType){
                 if(totalType[t] == "מאתגר" || totalType[t] == "מיטיבי לכת"){ 
                     isTypeRightChallenge=true;
                     isTypeRightHard=true;
@@ -628,7 +724,7 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                 } else if(totalType[t]=="מתאים לבעלי מוגבלויות") isTypeRightOld=true;
             }
             if(isTypeRightOld==true && isTypeRightChallenge==false && isTypeRightHard==false)
-                isTypeRight = true;
+                isTypeRight = true;*/
         } 
         // if the chosen type is challenging  
         else if(type == "מאתגר"){
@@ -681,7 +777,8 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                 "trip_difficulty": totalDiff,
                 "trip_type": totalType,
                 "trip_description": totalDescription,
-                "daily_sections": dailySectionsArr
+                "daily_sections": dailySectionsArr,
+                "disabled_flag": isDisabledFlag
             }
         callback(currentRoute);
         //if the chosen difficulty and type don't match the trip difficulty and type 
