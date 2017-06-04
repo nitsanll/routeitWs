@@ -108,6 +108,14 @@ exports.updateIdCounter = function(id, email){
   });
 }
 
+exports.getIdCounter = function(email){
+  var query = Traveler.findOne().where('email', mail).select('id_counter');
+  query.exec(function(err,idCounter){
+    if(err) callback("idCounterNotFound");
+    callback(idCounter);
+  });
+}
+
 // calculate trip end date and daily sections dates and update the trip dates 
 exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, callback){	
   //var sDate = new Date(sDate1);

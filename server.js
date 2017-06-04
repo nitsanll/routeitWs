@@ -73,6 +73,12 @@ app.get('/addRoute/:id/:ml', function(req,res){
     });
 });
 
+app.get('/getIdCounter/:ml', function(req,res){
+   Traveler.getIdCounter(req.params.ml, function(data){
+      res.json(data); 
+    });
+});
+
 app.get('/updateDates/:ml/:id/:sd/:dn/:fr/:st', function(req,res){
     console.log("before sending: " + req.params.sd);
     var date =  new Date(req.params.sd);
