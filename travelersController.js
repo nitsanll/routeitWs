@@ -102,17 +102,14 @@ exports.addRouteToTraveler = function(id, mail, callback){
 
 // calculate trip end date and daily sections dates and update the trip dates 
 exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, callback){	
-  //sDate.setHours(10);
-  //console.log("first " + sDate);
+  //var sDate = new Date(sDate1);
+  console.log("first " + sDate);
   //calculate trip's end date
-  //console.log(sDate.getDate());
-  //var eDate =  new Date(sDate.getTime() + Math.abs(sDate.getTimezoneOffset()*60000);
-  var eDate =  new Date(sDate);
-  //eDate.toUTCString();
-  eDate.setDate(eDate.getDate()+parseInt(daysNum));
-  //callback({"sDate": sDate, "eDate": eDate});
-  //console.log("start date: " +sDate);
-  //console.log("end date: "+eDate +"\n");
+  console.log(sDate.getDate());
+  var eDate = new Date(sDate);
+  eDate.setDate(eDate.getDate()+parseInt(daysNum-1));
+  console.log("start date: " +sDate);
+  console.log("end date: "+eDate +"\n");
 
   var tmpDate = sDate;
   var tripDatesArr = []; //array contains all of the trip's dates
@@ -121,13 +118,13 @@ exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, c
     tripDatesArr.push(new Date(tmpDate));
     tmpDate.setDate(tmpDate.getDate()+1);
   }
-  //console.log("after dates array: " + sDate);
+  console.log("after dates array: " + sDate);
   
-  //console.log("dates array: ");
+  console.log("dates array: ");
   for(var i = 0;  i<tripDatesArr.length; i++){
     console.log(tripDatesArr[i]);
   }
-	
+  
   //updating trip dates to traveler's trip
   var query = Traveler.findOne().where('email', mail).select('my_routes');
     query.exec(function(err,routes){
@@ -152,10 +149,10 @@ exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, c
       if(isRouteFound == true){
         routes.set('my_routes', myRoutes);
         routes.save();
-      	//callback("datesUpdated");
+        //callback("datesUpdated");
         callback(updatedRoute);
       }
-      else callback("routeNotFound");	
+      else callback("routeNotFound"); 
     });
 }
 
