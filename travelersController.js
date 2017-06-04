@@ -100,6 +100,14 @@ exports.addRouteToTraveler = function(id, mail, callback){
     });
 }
 
+exports.updateIdCounter = function(id, email){
+  var query = Traveler.findOneAndUpdate({email: mail}, {$set: {id_counter: (id+1)}});
+  query.exec(function(err,route){
+    if(err) callback("counterNotUpdated"); 
+    callback("updatedCounter");
+  });
+}
+
 // calculate trip end date and daily sections dates and update the trip dates 
 exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, callback){	
   //var sDate = new Date(sDate1);

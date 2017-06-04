@@ -65,8 +65,11 @@ app.get('/createTraveler/:ml/:fn/:pi', function(req,res){
 }); 
 
 app.get('/addRoute/:id/:ml', function(req,res){
-    Traveler.addRouteToTraveler(req.params.id, req.params.ml, function(data){
-      res.json(data); 
+    Traveler.addRouteToTraveler(req.params.id, req.params.ml, function(routeData){
+      var route = routeData;
+      Traveler.addRouteToTraveler(req.params.id, req.params.ml, function(data){
+        res.json(route); 
+      });
     });
 });
 

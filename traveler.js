@@ -79,7 +79,8 @@ var travelerSchema = new schema({
     email: {type:String, index:1, required:true, unique:true},
     suggested_route: route,
     previous_routes: [prevRoute],
-    my_routes: [route]
+    my_routes: [route],
+    id_counter: Number
 }, {collection: 'travelers'});
 
 var Traveler = mongoose.model('Traveler', travelerSchema);
