@@ -100,7 +100,7 @@ exports.addRouteToTraveler = function(id, mail, callback){
     });
 }
 
-exports.updateIdCounter = function(id, email){
+exports.updateIdCounter = function(id, email, callback){
   var query = Traveler.findOneAndUpdate({email: mail}, {$set: {id_counter: (id+1)}});
   query.exec(function(err,route){
     if(err) callback("counterNotUpdated"); 
@@ -108,7 +108,7 @@ exports.updateIdCounter = function(id, email){
   });
 }
 
-exports.getIdCounter = function(email){
+exports.getIdCounter = function(email, callback){
   var query = Traveler.findOne().where('email', email).select('id_counter');
   query.exec(function(err,idCounter){
     if(err) callback("idCounterNotFound");
