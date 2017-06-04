@@ -101,7 +101,8 @@ exports.addRouteToTraveler = function(id, mail, callback){
 }
 
 exports.updateIdCounter = function(id, email, callback){
-  var query = Traveler.findOneAndUpdate({email: mail}, {$set: {id_counter: (id+1)}});
+  var newId = id+1;
+  var query = Traveler.findOneAndUpdate({email: mail}, {$set: {id_counter: newId}});
   query.exec(function(err,route){
     if(err) callback("counterNotUpdated"); 
     callback("updatedCounter");
