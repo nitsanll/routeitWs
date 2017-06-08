@@ -149,6 +149,7 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     console.log(isDisabledFlag);
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
+                    totalkm = totalKm.toFixed(1);
                     endPt = segments[(segments.length)-1].end_pt;
                     buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
                     /*console.log("total KM: " + totalKm);
@@ -236,7 +237,7 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     console.log(isDisabledFlag);
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
-                    totalKm.toFixed(1);
+                    totalkm = totalKm.toFixed(1);
                     endPt = segments[(segments.length)-1].end_pt;
                     buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
                 }
@@ -330,7 +331,7 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     console.log(isDisabledFlag);
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
-                    totalKm.toFixed(1);
+                    totalkm = totalKm.toFixed(1);
                     endPt = segments[(segments.length)-1].end_pt;
                     buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);              
                 }       
@@ -418,7 +419,7 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     endPt = segments[0].start_pt;
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
-                    totalKm.toFixed(1);
+                    totalkm = totalKm.toFixed(1);
                     buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
                 }
                 
@@ -501,7 +502,7 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     endPt = segments[0].start_pt;
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
-                    totalKm.toFixed(1);
+                    totalkm = totalKm.toFixed(1);
                     buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
                }
                 
@@ -594,7 +595,7 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     endPt = segments[0].start_pt;
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
-                    totalKm.toFixed(1);
+                    totalkm = totalKm.toFixed(1);
                     buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
                 }        
             });
