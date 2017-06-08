@@ -149,7 +149,7 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     console.log(isDisabledFlag);
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
-                    totalkm = totalKm.toFixed(1);
+                    totalkm = parseFloat(totalKm).toFixed(1);
                     endPt = segments[(segments.length)-1].end_pt;
                     buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
                     /*console.log("total KM: " + totalKm);
