@@ -69,10 +69,7 @@ var prevRoute = new schema({
     end_date: Date,
     days_num: Number,
     trip_km: Number,
-    day_km: String,
-    trip_difficulty: String,
-    trip_type: [String],
-    trip_description: [String]
+    day_km: String
 });
 
 var travelerSchema = new schema({

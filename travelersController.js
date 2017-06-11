@@ -304,8 +304,8 @@ exports.getAllPreviousRoutes = function(mail, callback){
     });
 }
 
-exports.addPrevToTraveler = function(mail, route, callback){
-  var routeJson = JSON.parse(route);
+exports.addPrevToTraveler = function(mail, routeStr, callback){
+  var detailsArr = routeStr.split(",");
   /*var prevRoute = {
     trip_id: 1000,
     area: "ירושלים",
@@ -341,20 +341,17 @@ exports.addPrevToTraveler = function(mail, route, callback){
   };*/
 
   var prevRoute = {
-    trip_id: routeJson.trip_id,
-    area: routeJson.area,
-    direction: routeJson.direction,
-    creation_date: routeJson.creation_date,
-    trip_start_pt: routeJson.trip_start_pt,
-    trip_end_pt: routeJson.trip_end_pt,
-    start_date: routeJson.start_date,
-    end_date: routeJson.end_date,
-    days_num: routeJson.days_num,
-    trip_km: routeJson.trip_km,
-    day_km: routeJson.day_km,
-    trip_difficulty: routeJson.trip_difficulty,
-    trip_type: routeJson.trip_type,
-    trip_description: routeJson.trip_description
+    trip_id: routeStr[0],
+    area: routeStr[1],
+    direction: routeStr[2],
+    creation_date: routeStr[3],
+    trip_start_pt: routeStr[4],
+    trip_end_pt: routeStr[5],
+    start_date: routeStr[6],
+    end_date: routeStr[7],
+    days_num: routeStr[8],
+    trip_km: routeStr[9],
+    day_km: routeStr[10]
   };
     
   var query = Traveler.findOneAndUpdate({email: mail}, {$push: {previous_routes: prevRoute}});
