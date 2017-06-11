@@ -54,7 +54,8 @@ var route = new schema({
     trip_type: [String],
     trip_description: [String],
     daily_sections: [daily_section],
-    disabled_flag: Boolean
+    disabled_flag: Boolean,
+    isChosen: Boolean
 });
 
 var prevRoute = new schema({

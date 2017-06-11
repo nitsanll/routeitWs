@@ -779,7 +779,8 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                 "trip_type": totalType,
                 "trip_description": totalDescription,
                 "daily_sections": dailySectionsArr,
-                "disabled_flag": isDisabledFlag
+                "disabled_flag": isDisabledFlag,
+                "isChosen": false
             }
         callback(currentRoute);
         //if the chosen difficulty and type don't match the trip difficulty and type 
