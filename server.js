@@ -138,8 +138,8 @@ app.get('/getPrevRoutes/:ml', function(req,res){
     });
 });
 
-app.get('/addPrevRoute/:ml', function(req,res){
-    Traveler.addPrevToTraveler(req.params.ml, function(data){
+app.get('/addPrevRoute/:ml/:rt', function(req,res){
+    Traveler.addPrevToTraveler(req.params.ml, req.params.rt, function(data){
       res.json(data); 
     });
 });

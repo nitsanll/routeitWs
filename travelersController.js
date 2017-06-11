@@ -304,8 +304,8 @@ exports.getAllPreviousRoutes = function(mail, callback){
     });
 }
 
-exports.addPrevToTraveler = function(mail, callback){
-  //a route to add to 'my routes'
+exports.addPrevToTraveler = function(mail, route, callback){
+  var routeJson = JSON.parse(route);
   /*var prevRoute = {
     trip_id: 1000,
     area: "ירושלים",
@@ -320,10 +320,10 @@ exports.addPrevToTraveler = function(mail, callback){
     day_km: "עד 5",
     trip_difficulty: "המסלול ברובו ברמת קושי בינונית",
     trip_type: ["מתאים למשפחות"],
-    trip_description: ["מסלול ירוק", "נוף מרהיב", "מתאים לכל עונות השנה"],
+    trip_description: ["מסלול ירוק", "נוף מרהיב", "מתאים לכל עונות השנה"]
   };*/
 
-  var prevRoute = {
+  /*var prevRoute = {
     trip_id: 1001,
     area: "המכתשים",
     direction: "north",
@@ -337,7 +337,24 @@ exports.addPrevToTraveler = function(mail, callback){
     day_km: "5-10",
     trip_difficulty: "המסלול ברובו ברמת קושי קשה",
     trip_type: ["מאתגר"],
-    trip_description: ["מכיל עליות", "נוף מרהיב", "מתאים לכל עונות השנה"],
+    trip_description: ["מכיל עליות", "נוף מרהיב", "מתאים לכל עונות השנה"]
+  };*/
+
+  var prevRoute = {
+    trip_id: routeJson.trip_id,
+    area: routeJson.area,
+    direction: routeJson.direction,
+    creation_date: routeJson.creation_date,
+    trip_start_pt: routeJson.trip_start_pt,
+    trip_end_pt: routeJson.trip_end_pt,
+    start_date: routeJson.start_date,
+    end_date: routeJson.end_date,
+    days_num: routeJson.days_num,
+    trip_km: routeJson.trip_km,
+    day_km: routeJson.day_km,
+    trip_difficulty: routeJson.trip_difficulty,
+    trip_type: routeJson.trip_type,
+    trip_description: routeJson.trip_description
   };
     
   var query = Traveler.findOneAndUpdate({email: mail}, {$push: {previous_routes: prevRoute}});
