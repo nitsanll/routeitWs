@@ -341,17 +341,17 @@ exports.addPrevToTraveler = function(mail, routeStr, callback){
   };*/
 
   var prevRoute = {
-    trip_id: routeStr[0],
-    area: routeStr[1],
-    direction: routeStr[2],
-    creation_date: routeStr[3],
-    trip_start_pt: routeStr[4],
-    trip_end_pt: routeStr[5],
-    start_date: routeStr[6],
-    end_date: routeStr[7],
-    days_num: routeStr[8],
-    trip_km: routeStr[9],
-    day_km: routeStr[10]
+    trip_id: detailsArr[0],
+    area: detailsArr[1],
+    direction: detailsArr[2],
+    creation_date: detailsArr[3],
+    trip_start_pt: detailsArr[4],
+    trip_end_pt: detailsArr[5],
+    start_date: detailsArr[6],
+    end_date: detailsArr[7],
+    days_num: detailsArr[8],
+    trip_km: detailsArr[9],
+    day_km: detailsArr[10]
   };
     
   var query = Traveler.findOneAndUpdate({email: mail}, {$push: {previous_routes: prevRoute}});
