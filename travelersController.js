@@ -417,3 +417,25 @@ exports.addRouteToSuggested = function(route, mail, callback){
       callback(route);
     });
 }
+
+exports.setChosen = function(mail, tripId, isChosen, callback){
+  var query = Traveler.findOne().where('email', mail).select('my_routes');
+  query.exec(function(err,routes){
+  if(err) callback("myRoutesNotFound");
+    var isRouteFound = false;
+    var myRoutes = routes.my_routes;
+    for(var i = 0; i<myRoutes.length; i++){
+      if(myRoutes[i].trip_id == tripId){
+        isRouteFound = true;
+        myRoutes[i].isChosen = isChosen;
+        break;
+      }
+    }
+    if(isRouteFound == true){
+      routes.set('my_routes', myRoutes);
+      routes.save();
+      callback("isChosenUpdated"); 
+    }
+    else callback("routeNotFound");
+  });
+}

@@ -150,5 +150,11 @@ app.get('/deletePrevRoute/:ml/:id', function(req,res){
     });
 });
 
+app.get('/setChosen/:ml/:id/:ch', function(req,res){
+    Traveler.setChosen(req.params.ml, req.params.id, req.params.ch, function(data){
+      res.json(data); 
+    });
+});
+
 app.listen(port);
 console.log("service is lstening on port " + port);
