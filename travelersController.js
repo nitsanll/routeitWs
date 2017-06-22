@@ -351,7 +351,8 @@ exports.addPrevToTraveler = function(mail, routeStr, callback){
     end_date: detailsArr[7],
     days_num: detailsArr[8],
     trip_km: detailsArr[9],
-    day_km: detailsArr[10]
+    day_km: detailsArr[10],
+    trip_difficulty: detailsArr[11]
   };
     
   var query = Traveler.findOneAndUpdate({email: mail}, {$push: {previous_routes: prevRoute}});
