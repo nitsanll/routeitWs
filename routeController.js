@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Segment = require('./segment');
 
+// function that adds alerts to segments
 exports.setAlertForSegment = function(callback){
     var alert = {
         content: "פריחת הנרקיסים מרהיבה ביופיה בעונה זו",
@@ -13,10 +14,10 @@ exports.setAlertForSegment = function(callback){
     query.exec(function(err,route){
         if(err) callback("alertNotAdded"); 
         callback(alert);
-        //callback("routeAdded");
     });
 }
 
+// function that gets all segments
 exports.getAllSegments = function(callback){
     var allSegs = Segment.find();
     allSegs.exec(function(err,segment){
@@ -36,7 +37,7 @@ Array.prototype.unique = function() {
     return a;
 };
 
-// gets all of the areas and their start points
+// function that gets all of the areas and their start points
 exports.getSegmentsStartPt = function(callback){
     var segsStratPt = Segment.find({}).select('area start_pt');
     segsStratPt.exec(function(err,segments){
@@ -58,7 +59,7 @@ exports.getSegmentsStartPt = function(callback){
     });     
 }
 
-// calculate suggested route according to traveler's crtieria  
+// function that calculates suggested route according to traveler's crtieria  
 exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, type, callback){
     var numOfDailySections, maxTripTotalKm, numOfSegs;
     var maxSegmentKm = 5;
@@ -87,7 +88,6 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
             lastSegIndx = firstSegIndx + (numOfSegs - 1);
             var checkLastIndx = Segment.find({'indx':lastSegIndx});
             checkLastIndx.exec(function(err,segment){
-                //console.log("last segment: " + segment);
                 if(segment == ""){ 
                     callback("segmentsErr");
                 }
@@ -146,17 +146,11 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     if(isDisabledCounter == totalDays){
                         isDisabledFlag = true;
                     }
-                    console.log(isDisabledFlag);
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
                     totalkm = parseFloat(totalKm).toFixed(1);
                     endPt = segments[(segments.length)-1].end_pt;
                     buildRoute(endPt, dailySectionsArr, totalKm, easyDiff, medDiff, hardDiff, totalType, totalDescription, isDisabledFlag, callback);
-                    /*console.log("total KM: " + totalKm);
-                    console.log("totalDescription: " + totalDescription);
-                    console.log("easyDiff: " + easyDiff + " medDiff: " +medDiff+ " hardDiff: "+ hardDiff);
-                    console.log("totalType: " + totalType);
-                    console.log("endPt: " + endPt);*/
                 }
                 
                 // if the trip's km per day is 5-10 km
@@ -234,7 +228,6 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     if(isDisabledCounter == (totalDays*2)){
                         isDisabledFlag = true;
                     }
-                    console.log(isDisabledFlag);
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
                     totalkm = totalKm.toFixed(1);
@@ -328,7 +321,6 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     if(isDisabledCounter == (totalDays*3)){
                         isDisabledFlag = true;
                     }
-                    console.log(isDisabledFlag);
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
                     totalkm = totalKm.toFixed(1);
@@ -356,7 +348,6 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
             lastSegIndx = firstSegIndx - (numOfSegs-1);
             var checkLastIndx = Segment.find({'indx':lastSegIndx});
             checkLastIndx.exec(function(err,segment){
-                //console.log("last segment: " + segment);
                 if(segment == ""){ 
                     callback("segmentsErr");
                 }
@@ -415,7 +406,6 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     if(isDisabledCounter == totalDays){
                         isDisabledFlag = true;
                     }
-                    console.log(isDisabledFlag);
                     endPt = segments[0].start_pt;
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
@@ -498,7 +488,6 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
                     if(isDisabledCounter == (totalDays*2)){
                         isDisabledFlag = true;
                     }
-                    console.log(isDisabledFlag);
                     endPt = segments[0].start_pt;
                     totalType = totalType.unique();
                     totalDescription = totalDescription.unique();
@@ -717,15 +706,6 @@ exports.calculateRoute = function(area, kmDay, dir, totalDays, startPt, diff, ty
         // if the chosen type is for disabled people
         else if(type == "מתאים לבעלי מוגבלויות"){
            if(isDisabledFlag == true) isTypeRight = true;
-           /*for(t in totalType){
-                if(totalType[t] == "מאתגר" || totalType[t] == "מיטיבי לכת"){ 
-                    isTypeRightChallenge=true;
-                    isTypeRightHard=true;
-                    break;
-                } else if(totalType[t]=="מתאים לבעלי מוגבלויות") isTypeRightOld=true;
-            }
-            if(isTypeRightOld==true && isTypeRightChallenge==false && isTypeRightHard==false)
-                isTypeRight = true;*/
         } 
         // if the chosen type is challenging  
         else if(type == "מאתגר"){
@@ -818,17 +798,12 @@ exports.calculateFullRoute = function(area, kmDay, dir, callback){
                     if(segments[i].indx==segments.length) endPt = segments[i].end_pt;                
                     totalKm += segments[i].total_km;
                 }
-                /*console.log("startPt is: " + startPt);
-                console.log("endPt is: " + endPt);
-                console.log("totalKm: " + totalKm);*/
-                
                 var dailySectionsArr = []; // array of all trip's daily sections
                 var dailySection; // daily section for one day 
                 
                 // if the trip's km per day is up to 5 km
                 if(kmDay == 5){
                     totalDays = segments.length;
-                    //console.log("total days is: " + totalDays);
                     for(var i = 0; i<totalDays; i++){
                         dailySection = 
                         { 
@@ -854,9 +829,7 @@ exports.calculateFullRoute = function(area, kmDay, dir, callback){
                 if(kmDay == 10){
                     totalDays = (segments.length)/2;
                     if(totalDays % 1 != 0) totalDays = parseInt(totalDays) + 1;
-                    //console.log("total days is: " + totalDays);
                     for(var i = 0, j = 0; i<totalDays; i++, j+=2){
-                        //console.log("inside the " + j + " iteration");
                         if((segments[j+1]) ==  null) {
                             dailySection = 
                             { 
@@ -932,7 +905,6 @@ exports.calculateFullRoute = function(area, kmDay, dir, callback){
                 if(kmDay == 15){
                     totalDays = (segments.length)/3;
                     if(totalDays % 1 != 0) totalDays = parseInt(totalDays) + 1;
-                    //console.log("total days is: " + totalDays);
                     for(var i = 0, j = 0; i<totalDays; i++, j+=3){
                         if(segments[j+1] == null) {
                             dailySection = 
@@ -1073,17 +1045,12 @@ exports.calculateFullRoute = function(area, kmDay, dir, callback){
                     if(segments[i].indx==segments.length) startPt = segments[i].end_pt;                
                     totalKm += segments[i].total_km;
                 }
-                /*console.log("startPt is: " + startPt);
-                console.log("endPt is: " + endPt);
-                console.log("totalKm: " + totalKm);*/
-                
                 var dailySectionsArr = []; // array of all trip's daily sections
                 var dailySection; // daily section for one day 
                 
                 // if the trip's km per day is up to 5 km
                 if(kmDay == 5){
                     totalDays = segments.length;
-                    //console.log("total days is: " + totalDays);
                     for(var i = 0, j = (segments.length)-1; i < totalDays; i++, j--){
                         dailySection = 
                         { 
@@ -1109,7 +1076,6 @@ exports.calculateFullRoute = function(area, kmDay, dir, callback){
                 if(kmDay == 10){
                     totalDays = (segments.length)/2;
                     if(totalDays % 1 != 0) totalDays = parseInt(totalDays) + 1;
-                    //console.log("total days is: " + totalDays);
                     for(var i = 0, j = (segments.length)-1; i<totalDays; i++, j-=2){
                         if((segments[j-1]) ==  null) {
                             dailySection = 
@@ -1186,7 +1152,6 @@ exports.calculateFullRoute = function(area, kmDay, dir, callback){
                 if(kmDay == 15){
                     totalDays = (segments.length)/3;
                     if(totalDays % 1 != 0) totalDays = parseInt(totalDays) + 1;
-                    //console.log("total days is: " + totalDays);
                     for(var i = 0, j = (segments.length)-1; i<totalDays; i++, j-=3){
                         if((segments[j-1]) ==  null) {
                             dailySection = 
@@ -1316,6 +1281,7 @@ exports.calculateFullRoute = function(area, kmDay, dir, callback){
         }
     }
 
+    // function that builds the total suggested route
     function buildRoute(startPt, endPt, dailySectionsArr, totalKm, totalDays, callback){
         var totalDescription = "שביל ישראל הוא הטרק של המדינה, שביל המזמין אתכם לחוות את הארץ דרך כל הגוף וכל החושים. מסע אלף הקילומטרים של שביל ישראל יוביל אתכם מדן ועד אילת, ובדרך תטעמו מכל טוב הארץ: מהירוק והמים של מקורות הירדן, הרי הגליל, הכנרת, הכרמל ומרכז הארץ, השקט של המדבר ועד הצבעים של הרי אילת וים סוף."
         var tmpKmDay = "";

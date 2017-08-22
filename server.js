@@ -19,8 +19,6 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//app.use(express.bodyParser({limit: '50mb'}));
-
 // routeController functions
 app.get('/calculate/:ar/:km/:dr/:td/:sp/:df/:tp/:ml', function(req,res){
     Segment.calculateRoute(req.params.ar,req.params.km,req.params.dr,req.params.td,req.params.sp,req.params.df,req.params.tp,function(data){
@@ -86,7 +84,6 @@ app.get('/updateDates/:ml/:id/:sd/:dn/:fr/:st', function(req,res){
     Traveler.updateTripDates(req.params.ml, req.params.id, date, req.params.dn, req.params.fr, req.params.st, function(data){
       res.json(data); 
     });
-    //res.json({'param': req.params.sd, 'date': date});
 });
 
 app.get('/deleteDates/:ml/:id', function(req,res){
@@ -100,12 +97,6 @@ app.get('/deleteRoute/:ml/:id', function(req,res){
       res.json(data); 
     });
 }); 
-
-/*app.get('/getRoute/:ml/:id', function(req,res){
-    Traveler.getCurrentRoute(req.params.ml, req.params.id, function(data){
-      res.json(data); 
-    });
-});*/
 
 app.get('/saveAccomm/:ml/:id/:ac/:dn', function(req,res){
     var accommArr = (req.params.ac).split(",");

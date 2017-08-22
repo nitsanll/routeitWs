@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Traveler = require('./traveler');
 
-// if user doesn't exist, create new user and adding it to the database
+// function that creates new user and adding it to the database if the user doesn't exist
 exports.createTraveler = function(mail, name, pic, callback){
     var newchar = '/';
     pic = pic.split('*').join(newchar);
@@ -25,13 +25,12 @@ exports.createTraveler = function(mail, name, pic, callback){
     });
 }
 
-// adding sugeested route to traveler's 'my routes'
+// function that adds sugeested route to traveler's 'my routes'
 exports.addRouteToTraveler = function(id, mail, callback){   
     //pushing myRoute to traveler's 'my routes'
     var query = Traveler.findOne({email: mail}).select('suggested_route');
     query.exec(function(err,sugRoute){
       if(err) callback("travelerNotFound");
-      //console.log(route.suggested_route.area);
       var route = sugRoute.suggested_route;
       var dailySectionsArr = []; //contains trip's daily section
       for(var i = 0; i<route.daily_sections.length; i++){
@@ -43,15 +42,6 @@ exports.addRouteToTraveler = function(id, mail, callback){
           coord.lng = coordArr[j].lng;
           coordArray.push(coord);
         }
-        /*var alertArray = [];
-        var alertArr = route.daily_sections[i].alert;
-        for(var j=0; j<alertArr; j++){
-          var alert = {};
-          alert.content = alertArr[j].content;
-          alert.coord = alertArr[j].coord;
-          alertArray.push(alert);
-        }*/
-
         //a trip's daily section
         var dailySection = { 
           day_num: route.daily_sections[i].day_num,
@@ -64,7 +54,6 @@ exports.addRouteToTraveler = function(id, mail, callback){
           duration: route.daily_sections[i].duration,
           difficulty: route.daily_sections[i].difficulty,
           alert: route.daily_sections[i].alert,
-          //alert: alertArray,
           chosen_accomm: null,
           description: route.daily_sections[i].description,
           type: route.daily_sections[i].type
@@ -97,11 +86,11 @@ exports.addRouteToTraveler = function(id, mail, callback){
       query.exec(function(err,route){
         if(err) callback("routeNotAdded"); 
         callback(myRoute);
-        //callback("routeAdded");
       });
     });
 }
 
+// function that increases the trips id counter
 exports.updateIdCounter = function(id, mail, callback){
   var newId = parseInt(id)+1;
   var query = Traveler.findOneAndUpdate({email: mail}, {$set: {id_counter: newId}});
@@ -111,6 +100,7 @@ exports.updateIdCounter = function(id, mail, callback){
   });
 }
 
+// function that gets the current id counter
 exports.getIdCounter = function(email, callback){
   var query = Traveler.findOne().where('email', email).select('id_counter');
   query.exec(function(err,idCounter){
@@ -119,17 +109,10 @@ exports.getIdCounter = function(email, callback){
   });
 }
 
-// calculate trip end date and daily sections dates and update the trip dates 
+// function that calculates trip end date and daily sections dates and update the trip dates 
 exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, callback){	
-  //var sDate = new Date(sDate1);
-  console.log("first " + sDate);
-  //calculate trip's end date
-  console.log(sDate.getDate());
   var eDate = new Date(sDate);
   eDate.setDate(eDate.getDate()+parseInt(daysNum-1));
-  console.log("start date: " +sDate);
-  console.log("end date: "+eDate +"\n");
-
   var tmpDate = sDate;
   var tripDatesArr = []; //array contains all of the trip's dates
   //calculating trip dates between start date to end date
@@ -137,20 +120,12 @@ exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, c
     tripDatesArr.push(new Date(tmpDate));
     tmpDate.setDate(tmpDate.getDate()+1);
   }
-  console.log("after dates array: " + sDate);
-  
-  console.log("dates array: ");
-  for(var i = 0;  i<tripDatesArr.length; i++){
-    console.log(tripDatesArr[i]);
-  }
-  
   //updating trip dates to traveler's trip
   var query = Traveler.findOne().where('email', mail).select('my_routes');
     query.exec(function(err,routes){
       if(err) callback("myRoutesNotFound");
       var myRoutes = routes.my_routes;
       var isRouteFound = false;
-      console.log("updating: " + tripDatesArr[0]);
       for(var i = 0; i<myRoutes.length; i++){
         if(myRoutes[i].trip_id == tripId){
           var isRouteFound = true;
@@ -158,7 +133,6 @@ exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, c
           myRoutes[i].start_date = tripDatesArr[0];
           var dailySecs = myRoutes[i].daily_sections;
           for(var j = 0; j<dailySecs.length; j++){
-            console.log("daily "+ tripDatesArr[j]);
             dailySecs[j].date = tripDatesArr[j];
           }
           var updatedRoute = myRoutes[i];
@@ -168,14 +142,13 @@ exports.updateTripDates = function(mail, tripId, sDate, daysNum, isFri, isSat, c
       if(isRouteFound == true){
         routes.set('my_routes', myRoutes);
         routes.save();
-        //callback("datesUpdated");
         callback(updatedRoute);
       }
       else callback("routeNotFound"); 
     });
 }
 
-//delete trip dates and daily sections dates
+// function that deletes trip dates and daily sections dates
 exports.deleteTripDates = function(mail, tripId, callback){  
   //delete trip dates from traveler's trip
   var query = Traveler.findOne().where('email', mail).select('my_routes');
@@ -199,7 +172,6 @@ exports.deleteTripDates = function(mail, tripId, callback){
       if(isRouteFound == true){
         routes.set('my_routes', myRoutes);
         routes.save();
-        //callback("datesUpdated");
         callback(updatedRoute);
       }
       else callback("routeNotFound"); 
@@ -207,7 +179,7 @@ exports.deleteTripDates = function(mail, tripId, callback){
 }
 
 
-// delete a certain trip by trip id
+// function that deletes a certain trip by trip id
 exports.deleteRouteFromTraveler = function(mail, tripId, callback){
    var query = Traveler.findOneAndUpdate({email: mail}, {$pull: {my_routes: {trip_id: tripId}}});
     query.exec(function(err,traveler){
@@ -216,24 +188,7 @@ exports.deleteRouteFromTraveler = function(mail, tripId, callback){
     });
 }
 
-// get the current route details
-/*exports.getCurrentRoute = function(mail, tripId, callback){
-  var query = Traveler.findOne().where('email', mail).select('my_routes');
-  query.exec(function(err,routes){
-      var myRoutes = routes.my_routes;
-      var tmpIndx = -1;
-      for(var i = 0; i<myRoutes.length; i++){
-        if(myRoutes[i].trip_id == tripId){
-          tmpIndx = i;
-          break;
-        }
-      }
-      if(tmpIndx == -1) callback("routeNotFound");
-      else callback(myRoutes[tmpIndx]); 
-    });
-} */
-
-// update the chosen accommodation for a daily section in current route 
+// function that updates the chosen accommodation for a daily section in current route 
 exports.saveAccommToDay = function(mail, tripId, accomm, dayNum, callback){
   var query = Traveler.findOne().where('email', mail).select('my_routes');
   query.exec(function(err,routes){
@@ -261,6 +216,7 @@ exports.saveAccommToDay = function(mail, tripId, accomm, dayNum, callback){
   });
 }
 
+// function that deletes the chosen accommodation for a daily section
 exports.deleteAccommFromDay = function(mail, tripId, dayNum, callback){
   var query = Traveler.findOne().where('email', mail).select('my_routes');
   query.exec(function(err,routes){
@@ -288,6 +244,7 @@ exports.deleteAccommFromDay = function(mail, tripId, dayNum, callback){
   });
 }
 
+// function that gets the user's "my routes"
 exports.getAllMyRoutes = function(mail, callback){
   var query = Traveler.findOne().where('email', mail).select('my_routes');
     query.exec(function(err,routes){
@@ -296,6 +253,7 @@ exports.getAllMyRoutes = function(mail, callback){
     });
 }
 
+// function that gets the user's "previous routes"
 exports.getAllPreviousRoutes = function(mail, callback){
   var query = Traveler.findOne().where('email', mail).select('previous_routes');
     query.exec(function(err,routes){
@@ -304,42 +262,9 @@ exports.getAllPreviousRoutes = function(mail, callback){
     });
 }
 
+// function that adds a route to the "previous routes" after it was ended
 exports.addPrevToTraveler = function(mail, routeStr, callback){
   var detailsArr = routeStr.split(",");
-  /*var prevRoute = {
-    trip_id: 1000,
-    area: "ירושלים",
-    direction: "north",
-    creation_date: new Date(2017,3,15),
-    trip_start_pt: "יער בן שמן",
-    trip_end_pt: "לטרון",
-    start_date: new Date(2017,3,26),
-    end_date: new Date(2017,3,27),
-    days_num: 2,
-    trip_km: 10,
-    day_km: "עד 5",
-    trip_difficulty: "המסלול ברובו ברמת קושי בינונית",
-    trip_type: ["מתאים למשפחות"],
-    trip_description: ["מסלול ירוק", "נוף מרהיב", "מתאים לכל עונות השנה"]
-  };*/
-
-  /*var prevRoute = {
-    trip_id: 1001,
-    area: "המכתשים",
-    direction: "north",
-    creation_date: new Date(2017,1,20),
-    trip_start_pt: "מצד תמר",
-    trip_end_pt: "מצד צפיר",
-    start_date: new Date(2017,2,2),
-    end_date: new Date(2017,2,4),
-    days_num: 3,
-    trip_km: 22,
-    day_km: "5-10",
-    trip_difficulty: "המסלול ברובו ברמת קושי קשה",
-    trip_type: ["מאתגר"],
-    trip_description: ["מכיל עליות", "נוף מרהיב", "מתאים לכל עונות השנה"]
-  };*/
-
   var prevRoute = {
     trip_id: detailsArr[0],
     area: detailsArr[1],
@@ -354,7 +279,6 @@ exports.addPrevToTraveler = function(mail, routeStr, callback){
     day_km: detailsArr[10],
     trip_difficulty: detailsArr[11]
   };
-    
   var query = Traveler.findOneAndUpdate({email: mail}, {$push: {previous_routes: prevRoute}});
   query.exec(function(err,route){
     if(err) callback("routeNotAdded"); 
@@ -362,6 +286,7 @@ exports.addPrevToTraveler = function(mail, routeStr, callback){
   }); 
 }
 
+// function that deletes a route from the "previous routes"
 exports.deletePrevFromTraveler = function(mail, tripId, callback){
   var query = Traveler.findOneAndUpdate({email: mail}, {$pull: {previous_routes: {trip_id: tripId}}});
   query.exec(function(err,traveler){
@@ -370,7 +295,7 @@ exports.deletePrevFromTraveler = function(mail, tripId, callback){
   });
 }
 
-// adding calculated suggested route to traveler
+// function that adds the calculated suggested route to traveler
 exports.addRouteToSuggested = function(route, mail, callback){
   var dailySectionsArr = []; //contains trip's daily section
   for(var i = 0; i<route.daily_sections.length; i++){
@@ -422,8 +347,6 @@ exports.addRouteToSuggested = function(route, mail, callback){
       disabled_flag: route.disabled_flag,
       isChosen: route.isChosen
     };
-
-    console.log("suggested is: " + sugRoute);
     
     //setting suggested route to traveler's 'suggested route' field
     var query = Traveler.findOneAndUpdate({email: mail}, {$set: {suggested_route: sugRoute}});
@@ -433,6 +356,7 @@ exports.addRouteToSuggested = function(route, mail, callback){
     });
 }
 
+// function that sets a chosen trip
 exports.setChosen = function(mail, tripId, isChosen, callback){
   var query = Traveler.findOne().where('email', mail).select('my_routes');
   query.exec(function(err,routes){
